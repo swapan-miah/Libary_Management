@@ -29,9 +29,14 @@ app.use(order_router_1.default);
 app.get("/", (req, res) => {
     res.send({ success: true, message: " I am here" });
 });
-app.listen(config_1.default.port, () => {
-    console.log(`server is runing`);
-});
+// For Vercel deployment
+const PORT = process.env.PORT || config_1.default.port || 5000;
+// Only start server if not in Vercel environment
+if (process.env.NODE_ENV !== "production") {
+    app.listen(PORT, () => {
+        console.log(`server is running on port ${PORT}`);
+    });
+}
 function server() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -44,3 +49,5 @@ function server() {
     });
 }
 server();
+// Export for Vercel
+exports.default = app;

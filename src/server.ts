@@ -20,14 +20,19 @@ app.get("/", (req, res) => {
   res.send({ success: true, message: " I am here" });
 });
 
-app.listen(config.port, () => {
-  console.log(`server is runing`);
-});
+// For Vercel deployment
+const PORT = process.env.PORT || config.port || 5000;
+
+// Only start server if not in Vercel environment
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => {
+    console.log(`server is running on port ${PORT}`);
+  });
+}
 
 async function server() {
   try {
     await mongoose.connect(config.database_url!);
-
     console.log(`connected to the database`);
   } catch (err) {
     console.error(`server err`, err);
@@ -35,3 +40,6 @@ async function server() {
 }
 
 server();
+
+// Export for Vercel
+export default app;
